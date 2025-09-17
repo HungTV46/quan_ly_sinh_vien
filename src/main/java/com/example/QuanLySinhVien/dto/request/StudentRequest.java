@@ -14,6 +14,8 @@ public class StudentRequest {
 
     @NonNull
     private String password;
+
+    @NonNull
     private String name;
     private LocalDate birthDate;
     private Double mark;

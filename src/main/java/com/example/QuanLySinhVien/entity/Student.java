@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Table(name = "STUDENT")
@@ -20,12 +21,14 @@ public class Student {
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "USERNAME")
+    @NonNull
+    @Column(name = "USERNAME", unique = true)
     private String username;
 
     @Column(name = "PASSWORD")
     private String password;
 
+    @NonNull
     @Column(name = "NAME")
     private String name;
 
@@ -34,4 +37,7 @@ public class Student {
 
     @Column(name = "MARK")
     private Double mark;
+
+    @ManyToMany(mappedBy = "Students")
+    private Set<Class> classes;
 }

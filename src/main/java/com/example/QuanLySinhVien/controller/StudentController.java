@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,10 +20,9 @@ import java.util.List;
 @RequestMapping("/api/v1/student")
 public class StudentController {
     private final StudentService studentService;
-    private final StudentMapper studentMapper;
 
     @PostMapping
-    public ResponseEntity<?> createStudent(@RequestBody StudentRequest studentRequest) {
+    public ResponseEntity<?> createStudent(@Validated @RequestBody StudentRequest studentRequest) {
         return ResponseEntity.ok(studentService.createStudent(studentRequest));
     }
 
@@ -83,5 +83,10 @@ public class StudentController {
     @GetMapping("/average-mark")
     public ResponseEntity<?> getAverageMark() {
         return ResponseEntity.ok(studentService.getAverageMark());
+    }
+
+    @GetMapping("/list-student/{id}")
+    public ResponseEntity<?> getStudentByClassId(@PathVariable Long id) {
+        return ResponseEntity.ok(studentService.getStudentByClassId(id));
     }
 }

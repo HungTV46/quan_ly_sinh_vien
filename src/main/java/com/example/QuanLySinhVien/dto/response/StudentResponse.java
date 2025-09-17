@@ -1,13 +1,13 @@
 package com.example.QuanLySinhVien.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class StudentResponse {
     private Long id;
 

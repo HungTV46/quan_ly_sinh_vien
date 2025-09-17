@@ -18,7 +18,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Service
 @RequiredArgsConstructor
@@ -89,7 +92,7 @@ public class FileDownloadService {
         return results;
     }
 
-    private CompletableFuture<String> insertFile(MultipartFile file, File uploadDir, List<String> results) {
+    private void insertFile(MultipartFile file, File uploadDir, List<String> results) {
         UploadedFile uploadedFile = new UploadedFile();
         uploadedFile.setFileName(file.getOriginalFilename());
         uploadedFile.setFileType(file.getContentType());

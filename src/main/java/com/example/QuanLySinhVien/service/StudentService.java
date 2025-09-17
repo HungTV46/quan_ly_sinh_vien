@@ -23,8 +23,13 @@ public class StudentService {
     private final StudentMapper studentMapper;
 
     public StudentResponse createStudent(StudentRequest request) {
+        if (studentRepository.existsByUsername(request.getUsername())) {
+            throw new RuntimeException("username is exist");
+        }
+
         Student student = studentMapper.toEntity(request);
         StudentResponse response = studentMapper.toDto(studentRepository.save(student));
+
         return response;
     }
 
@@ -169,5 +174,10 @@ public class StudentService {
                 .average()
                 .orElse(0.0);
         return Math.round(avgMark * 100.0) / 100.0;
+    }
+
+    public List<StudentResponse> getStudentByClassId(Long classId) {
+        List<Student> students = studentRepository.findStudentByClassId(classId);
+        return studentMapper.toListDto(students);
     }
 }
