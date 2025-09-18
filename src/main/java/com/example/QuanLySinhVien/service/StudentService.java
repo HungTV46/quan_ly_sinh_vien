@@ -1,13 +1,12 @@
 package com.example.QuanLySinhVien.service;
 
-import com.example.QuanLySinhVien.dto.projection.StudentProjection;
 import com.example.QuanLySinhVien.dto.request.MarkFilterRequest;
 import com.example.QuanLySinhVien.dto.request.StudentRequest;
 import com.example.QuanLySinhVien.dto.response.StudentResponse;
 import com.example.QuanLySinhVien.entity.Student;
+import com.example.QuanLySinhVien.exception.UsernameAlreadyExistsException;
 import com.example.QuanLySinhVien.mapper.StudentMapper;
 import com.example.QuanLySinhVien.repository.StudentRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Sort;
@@ -24,7 +23,7 @@ public class StudentService {
 
     public StudentResponse createStudent(StudentRequest request) {
         if (studentRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("username is exist");
+            throw new UsernameAlreadyExistsException("username is exist");
         }
 
         Student student = studentMapper.toEntity(request);
@@ -39,8 +38,8 @@ public class StudentService {
         return studentResponses;
     }
 
-    public Optional<Student> getStudentById(Long id) {
-        return studentRepository.findById(id);
+    public StudentResponse getStudentById(Long id) {
+        return studentMapper.toDto(studentRepository.findById(id).orElseThrow(()-> new RuntimeException("student is not exist")));
     }
 
     public List<StudentResponse> filterMarkGoodStudent(MarkFilterRequest request) {
