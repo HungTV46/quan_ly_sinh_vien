@@ -1,5 +1,6 @@
 package com.example.QuanLySinhVien.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -38,6 +39,7 @@ public class Student {
     @Column(name = "MARK")
     private Double mark;
 
+    @Schema(hidden = true)
     @ManyToMany(mappedBy = "Students")
-    private Set<Class> classes;
+    private Set<ClassEntity> classEntities;
 }

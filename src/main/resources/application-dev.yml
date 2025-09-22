@@ -1,0 +1,45 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /identity
+
+spring:
+  datasource:
+    url: "jdbc:mysql://localhost:3306/quan_ly_sinh_vien"
+    username: root
+    password: root
+    # Cấu hình pool kết nối để tăng hiệu suất
+    hikari:
+      maximum-pool-size: 5 # Số lượng kết nối tối đa
+      idle-timeout: 30000  # Thời gian kết nối rảnh rỗi bị đóng
+
+  jpa:
+    hibernate:
+      ddl-auto: update # Cài đặt cho môi trường dev
+    show-sql: true     # Bật hiển thị SQL
+    properties:
+      hibernate:
+        format_sql: true # Tự động format câu lệnh SQL cho dễ đọc
+
+  main:
+    lazy-initialization: true
+
+logging:
+  level:
+    root: info # Đặt mức log là DEBUG để gỡ lỗi dễ hơn
+
+springdoc:
+  swagger-ui:
+    enabled: true
+#    path: /swagger-ui.html
+#springdoc:
+#  swagger-ui:
+#    path: /docs       # swagger UI tại /docs
+#  api-docs:
+#    path: /api-docs   # spec JSON tại /api-docs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

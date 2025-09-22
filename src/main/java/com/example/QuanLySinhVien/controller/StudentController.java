@@ -33,7 +33,7 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getStudentById(id));
     }
 
-    @GetMapping("/filter-good-student")
+    @PostMapping("/filter-good-student")
     public ResponseEntity<?> filterGoodStudent(@RequestBody MarkFilterRequest markFilterRequest) {
         return ResponseEntity.ok(studentService.filterMarkGoodStudent(markFilterRequest));
     }
@@ -48,13 +48,13 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getStudentByName(name));
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateStudent(@RequestParam Long id, @RequestBody StudentRequest studentRequest) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateStudent(@PathVariable Long id, @RequestBody StudentRequest studentRequest) {
         return ResponseEntity.ok(studentService.updateStudent(studentRequest, id));
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteStudent(@RequestParam Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
         return ResponseEntity.ok("Student deleted successfully");
     }
@@ -64,6 +64,7 @@ public class StudentController {
         List<StudentResponse> students = studentService.getAllStudents();
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=students.json")
+                .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .body(students);
     }
 
