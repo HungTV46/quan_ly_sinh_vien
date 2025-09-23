@@ -18,33 +18,33 @@ public class SubjectService {
     private final SubjectRepository subjectRepository;
     private final SubjectMapper subjectMapper;
 
-    public SubjectResponse createSubject(SubjectRequest request) {
+    public SubjectResponse create(SubjectRequest request) {
         if (subjectRepository.existsByName(request.getName())){
             throw new AppException(ErrorCode.USERNAME_EXISTED);
         }
-        Subject subject = subjectMapper.toEntity(request);
-        subjectRepository.save(subject);
-        return subjectMapper.toDto(subject);
+        Subject entity = subjectMapper.toEntity(request);
+        subjectRepository.save(entity);
+        return subjectMapper.toDto(entity);
     }
 
-    public List<SubjectResponse> getAllSubjects() {
+    public List<SubjectResponse> getAll() {
         List<Subject> subjects = subjectRepository.findAll();
         return subjectMapper.toListDto(subjects);
     }
 
     public SubjectResponse getById(Long id) {
-        Subject subject = subjectRepository.findById(id)
+        Subject entity = subjectRepository.findById(id)
                 .orElseThrow(()-> new AppException(ErrorCode.ID_NOTFOUND));
-        return subjectMapper.toDto(subject);
+        return subjectMapper.toDto(entity);
     }
 
-    public SubjectResponse updateSubject(Long id, SubjectRequest request) {
-        Subject subject = subjectRepository.findById(id)
+    public SubjectResponse update(Long id, SubjectRequest request) {
+        Subject entity = subjectRepository.findById(id)
                 .orElseThrow(()-> new AppException(ErrorCode.ID_NOTFOUND));
 
-        subjectMapper.updateSubject(request, subject);
-        subjectRepository.save(subject);
-        return subjectMapper.toDto(subject);
+        subjectMapper.update(request, entity);
+        subjectRepository.save(entity);
+        return subjectMapper.toDto(entity);
     }
 
     public void delete(Long id) {

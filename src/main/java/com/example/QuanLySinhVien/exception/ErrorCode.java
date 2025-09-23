@@ -14,6 +14,7 @@ public enum ErrorCode {
     ID_NOTFOUND(1007, "Id not found!"),
     EMAIL_INVALID(1008, "Email is invalid!"),
     EMAIL_EXISTED(1009, "Email already existed!"),
+    ID_EXISTED(1010, "Id already existed!"),
             ;
 
     private int code;

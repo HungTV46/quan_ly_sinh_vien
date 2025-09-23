@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -30,8 +32,11 @@ public class SubjectClass {
     @JoinColumn(name = "subject_id")
     private Subject subject;
 
+    @CreationTimestamp
+    @Column(updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     private Integer status; // 1: active, 2: inactive

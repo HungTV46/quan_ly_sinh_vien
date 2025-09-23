@@ -18,5 +18,5 @@ public interface SubjectMapper {
     List<SubjectResponse> toListDto(List<Subject> entity);
 
     @Mapping(target = "id", ignore = true)
-    void updateSubject(SubjectRequest request, @MappingTarget Subject entity);
+    void update(SubjectRequest request, @MappingTarget Subject entity);
 }

@@ -41,7 +41,6 @@ public class Student {
     @Column(name = "MARK")
     private Double mark;
 
-    @Schema(hidden = true)
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StudentClass> studentClasses = new ArrayList<>();
 }
