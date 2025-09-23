@@ -6,7 +6,6 @@ import com.example.QuanLySinhVien.dto.response.StudentResponse;
 import com.example.QuanLySinhVien.entity.Student;
 import com.example.QuanLySinhVien.exception.AppException;
 import com.example.QuanLySinhVien.exception.ErrorCode;
-import com.example.QuanLySinhVien.exception.UsernameAlreadyExistsException;
 import com.example.QuanLySinhVien.mapper.StudentMapper;
 import com.example.QuanLySinhVien.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;

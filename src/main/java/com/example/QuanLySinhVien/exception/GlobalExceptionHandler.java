@@ -21,13 +21,13 @@ public class GlobalExceptionHandler {
 
     private static final String MIN_ATTRIBUTE = "min";
 
-    @ExceptionHandler(UsernameAlreadyExistsException.class)
-    public ResponseEntity<ApiResponse> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException e) {
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setCode(ErrorCode.USERNAME_EXISTED.getCode());
-        apiResponse.setMessage(ErrorCode.USERNAME_EXISTED.getMessage());
-        return ResponseEntity.badRequest().body(apiResponse);
-    }
+//    @ExceptionHandler(.class)
+//    public ResponseEntity<ApiResponse> handleUsernameAlreadyExistsException( e) {
+//        ApiResponse apiResponse = new ApiResponse();
+//        apiResponse.setCode(ErrorCode.USERNAME_EXISTED.getCode());
+//        apiResponse.setMessage(ErrorCode.USERNAME_EXISTED.getMessage());
+//        return ResponseEntity.badRequest().body(apiResponse);
+//    }
 
     @ExceptionHandler(value = AppException.class)
     ResponseEntity<ApiResponse> handlingAppException (AppException exception){

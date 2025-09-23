@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -27,12 +29,9 @@ public class ClassEntity {
     @NotBlank(message = "")
     private String className;
 
-    @Schema(hidden = true)
-    @ManyToMany
-    @JoinTable(
-            name = "student_class",
-            joinColumns = @JoinColumn(name = "class_id"),
-            inverseJoinColumns = @JoinColumn(name = "student_id")
-    )
-    private Set<Student> Students;
+    @OneToMany(mappedBy = "classEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StudentClass> studentClasses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "classEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Teacher> Teachers = new ArrayList<>();
 }

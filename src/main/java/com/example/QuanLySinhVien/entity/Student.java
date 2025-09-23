@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -40,6 +42,6 @@ public class Student {
     private Double mark;
 
     @Schema(hidden = true)
-    @ManyToMany(mappedBy = "Students")
-    private Set<ClassEntity> classEntities;
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StudentClass> studentClasses = new ArrayList<>();
 }

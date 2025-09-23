@@ -12,6 +12,8 @@ public enum ErrorCode {
     CLASSNAME_EXISTED(1005, "Class name existed!"),
     CLASSNAME_NOTBlANK(1006, "Class name is not blank!"),
     ID_NOTFOUND(1007, "Id not found!"),
+    EMAIL_INVALID(1008, "Email is invalid!"),
+    EMAIL_EXISTED(1009, "Email already existed!"),
             ;
 
     private int code;

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
-    @Query(value = "SELECT * FROM student WHERE UPPER(name) LIKE CONCAT('%', :name,'%')", nativeQuery = true)
+    @Query(value = "SELECT s FROM Student s WHERE UPPER(s.name) LIKE CONCAT('%', :name,'%')")
     List<Student> findStudentByName(@Param("name") String name);
 
     @Query(value = "select s from Student s where year(s.birthDate) = :year")
@@ -19,7 +19,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
 //    @Override
 //    Optional<Student> findById(Long id);
-    @Query(value = "select s from Student s join s.classes c where c.id = :id")
+    @Query(value = "select s from Student s join s.studentClasses c where c.classEntity.id = :id")
     List<Student> findStudentByClassId(@Param("id") Long id);
 
     @NonNull String findByUsername(String username);
