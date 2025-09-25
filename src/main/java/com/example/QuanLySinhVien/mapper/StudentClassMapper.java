@@ -1,7 +1,10 @@
 package com.example.QuanLySinhVien.mapper;
 
+import com.example.QuanLySinhVien.dto.request.StudentClassRequest;
 import com.example.QuanLySinhVien.dto.request.SubjectClassRequest;
+import com.example.QuanLySinhVien.dto.response.StudentClassResponse;
 import com.example.QuanLySinhVien.dto.response.SubjectClassResponse;
+import com.example.QuanLySinhVien.entity.StudentClass;
 import com.example.QuanLySinhVien.entity.SubjectClass;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -10,32 +13,29 @@ import org.mapstruct.MappingTarget;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface SubjectClassMapper {
-    @Mapping(source = "subject.id", target = "subjectId")
-    @Mapping(source = "subject.name", target = "subjectName", defaultValue = "")
+public interface StudentClassMapper {
+
+    @Mapping(source = "student.id", target = "studentId")
+    @Mapping(source = "student.name", target = "studentName", defaultValue = "")
     @Mapping(source = "classEntity.id", target = "classId")
     @Mapping(source = "classEntity.className", target = "className", defaultValue = "")
     @Mapping(source = "createdAt", target = "createdAt")
     @Mapping(source = "updatedAt", target = "updatedAt")
-    SubjectClassResponse toDto(SubjectClass entity);
+    StudentClassResponse toDto(StudentClass entity);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "subject", ignore = true)
+    @Mapping(target = "student", ignore = true)
     @Mapping(target = "classEntity", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    SubjectClass toEntity(SubjectClassRequest request);
+    StudentClass toEntity(StudentClassRequest request);
 
-//    List<SubjectClassResponse> toListDto(SubjectClass entity);
-
-    @Mapping(source = "subject.id", target = "subjectId")
-    @Mapping(source = "subject.name", target = "subjectName", defaultValue = "")
+    @Mapping(source = "student.id", target = "studentId")
+    @Mapping(source = "student.name", target = "studentName", defaultValue = "")
     @Mapping(source = "classEntity.id", target = "classId")
     @Mapping(source = "classEntity.className", target = "className", defaultValue = "")
-    @Mapping(source = "createdAt", target = "createdAt")
-    @Mapping(source = "updatedAt", target = "updatedAt")
-    List<SubjectClassResponse> toListDto(List<SubjectClass> entity);
+    List<StudentClassResponse> toListDto(List<StudentClass> entity);
 
     @Mapping(target = "id", ignore = true)
-    void update(SubjectClassRequest request, @MappingTarget SubjectClass entity);
+    void update(StudentClassRequest request, @MappingTarget StudentClass entity);
 }

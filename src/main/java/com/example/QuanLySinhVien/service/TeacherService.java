@@ -2,10 +2,12 @@ package com.example.QuanLySinhVien.service;
 
 import com.example.QuanLySinhVien.dto.request.TeacherRequest;
 import com.example.QuanLySinhVien.dto.response.TeacherResponse;
+import com.example.QuanLySinhVien.entity.ClassEntity;
 import com.example.QuanLySinhVien.entity.Teacher;
 import com.example.QuanLySinhVien.exception.AppException;
 import com.example.QuanLySinhVien.exception.ErrorCode;
 import com.example.QuanLySinhVien.mapper.TeacherMapper;
+import com.example.QuanLySinhVien.repository.ClassRepository;
 import com.example.QuanLySinhVien.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,13 +18,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TeacherService {
     private final TeacherRepository teacherRepository;
+    private final ClassRepository classRepository;
     private final TeacherMapper teacherMapper;
 
     public TeacherResponse create(TeacherRequest request) {
         if (teacherRepository.existsByEmail(request.getEmail())){
             throw new AppException(ErrorCode.EMAIL_EXISTED);
         }
+        ClassEntity classEntity = classRepository.findById(request.getClassId())
+                .orElseThrow(()-> new AppException(ErrorCode.ID_NOTFOUND));
         Teacher teacher = teacherMapper.toEntity(request);
+        teacher.setClassEntity(classEntity);
         teacherRepository.save(teacher);
         return teacherMapper.toDto(teacher);
     }
@@ -42,7 +48,11 @@ public class TeacherService {
         Teacher teacher = teacherRepository.findById(id)
                 .orElseThrow(()-> new AppException(ErrorCode.ID_NOTFOUND));
 
+        ClassEntity classEntity = classRepository.findById(id)
+                .orElseThrow(()-> new AppException(ErrorCode.ID_NOTFOUND));
+
         teacherMapper.updateTeacher(request, teacher);
+        teacher.setClassEntity(classEntity);
         teacherRepository.save(teacher);
         return teacherMapper.toDto(teacher);
     }

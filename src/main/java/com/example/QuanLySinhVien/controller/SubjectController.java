@@ -3,6 +3,7 @@ package com.example.QuanLySinhVien.controller;
 import com.example.QuanLySinhVien.dto.request.SubjectRequest;
 import com.example.QuanLySinhVien.dto.response.ApiResponse;
 import com.example.QuanLySinhVien.service.SubjectService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,7 @@ public class SubjectController {
     private final SubjectService subjectService;
 
     @PostMapping
-    public ApiResponse<?> create(@RequestBody SubjectRequest request) {
+    public ApiResponse<?> create(@Valid @RequestBody SubjectRequest request) {
         return ApiResponse.builder()
                 .result(subjectService.create(request))
                 .build();
@@ -34,7 +35,7 @@ public class SubjectController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<?> update(@PathVariable Long id, @RequestBody SubjectRequest request) {
+    public ApiResponse<?> update(@PathVariable Long id, @Valid @RequestBody SubjectRequest request) {
         return ApiResponse.builder()
                 .result(subjectService.update(id, request))
                 .build();

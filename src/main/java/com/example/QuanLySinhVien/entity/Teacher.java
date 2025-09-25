@@ -3,6 +3,8 @@ package com.example.QuanLySinhVien.entity;
 import com.example.QuanLySinhVien.exception.ErrorCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +26,6 @@ public class Teacher {
     @Column(name = "NAME")
     private String name;
 
-    @Email(message = "EMAIL_INVALID")
     @Column(name = "EMAIL")
     private String email;
 

@@ -4,6 +4,7 @@ import com.example.QuanLySinhVien.dto.request.TeacherRequest;
 import com.example.QuanLySinhVien.dto.response.ApiResponse;
 import com.example.QuanLySinhVien.dto.response.TeacherResponse;
 import com.example.QuanLySinhVien.service.TeacherService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +15,7 @@ public class TeacherController {
     private final TeacherService teacherService;
 
     @PostMapping
-    public ApiResponse<?> create(@RequestBody TeacherRequest request) {
+    public ApiResponse<?> create(@Valid @RequestBody TeacherRequest request) {
         return ApiResponse.builder()
                 .result(teacherService.create(request))
                 .build();
@@ -28,14 +29,14 @@ public class TeacherController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<TeacherResponse> getById(@PathVariable Long id) {
+    public ApiResponse<TeacherResponse> getById(@PathVariable @Valid Long id) {
         return ApiResponse.<TeacherResponse>builder()
                 .result(teacherService.getById(id))
                 .build();
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<?> update(@PathVariable Long id, @RequestBody TeacherRequest request) {
+    public ApiResponse<?> update(@PathVariable Long id, @Valid @RequestBody TeacherRequest request) {
         return ApiResponse.builder()
                 .result(teacherService.update(id, request))
                 .build();

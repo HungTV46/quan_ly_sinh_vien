@@ -2,10 +2,7 @@ package com.example.QuanLySinhVien.entity;
 
 import com.example.QuanLySinhVien.entity.embedded.StudentClassId;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,7 +11,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "student_class")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -28,7 +26,7 @@ public class StudentClass implements Serializable {
     private Student student;
 
     @ManyToOne
-    @MapsId("classEntityId")
+    @MapsId("classId")
     @JoinColumn(name = "class_id")
     private ClassEntity classEntity;
 

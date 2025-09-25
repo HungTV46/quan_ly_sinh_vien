@@ -13,6 +13,7 @@ import java.util.List;
 public interface TeacherMapper {
     TeacherResponse toDto(Teacher entity);
 
+//    @Mapping(target = "classEntity", source = "classId")
     Teacher toEntity(TeacherRequest request);
 
     List<TeacherResponse> toListDto(List<Teacher> entity);

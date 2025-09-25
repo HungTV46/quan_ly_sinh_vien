@@ -23,14 +23,14 @@ public class SubjectClass {
     private SubjectClassId id;
 
     @ManyToOne
-    @MapsId("classEntityId")
-    @JoinColumn(name = "class_id")
-    private ClassEntity classEntity;
-
-    @ManyToOne
     @MapsId("subjectId")
     @JoinColumn(name = "subject_id")
     private Subject subject;
+
+    @ManyToOne
+    @MapsId("classId")
+    @JoinColumn(name = "class_id")
+    private ClassEntity classEntity;
 
     @CreationTimestamp
     @Column(updatable = false, nullable = false)

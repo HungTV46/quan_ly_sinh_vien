@@ -12,5 +12,4 @@ public class TeacherResponse {
     private String email;
     private String address;
     private String phone;
-    private ClassEntity classEntity;
 }

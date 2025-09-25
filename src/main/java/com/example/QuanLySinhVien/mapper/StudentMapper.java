@@ -1,14 +1,17 @@
 package com.example.QuanLySinhVien.mapper;
 
+import com.example.QuanLySinhVien.constant.Constant;
+import com.example.QuanLySinhVien.dto.PageDto;
 import com.example.QuanLySinhVien.dto.request.StudentRequest;
 import com.example.QuanLySinhVien.dto.response.StudentResponse;
 import com.example.QuanLySinhVien.entity.Student;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Optional;
 
 @Mapper(componentModel = "spring")
 public interface StudentMapper {

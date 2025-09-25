@@ -9,8 +9,10 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -30,50 +32,44 @@ public class GlobalExceptionHandler {
 //    }
 
     @ExceptionHandler(value = AppException.class)
-    ResponseEntity<ApiResponse> handlingAppException (AppException exception){
-        ErrorCode errorCode = exception.getErrorCode();
-        ApiResponse apiResponse = new ApiResponse();
+    ResponseEntity<ApiResponse<?>> handlingAppException (AppException e){
+        ErrorCode errorCode = e.getErrorCode();
 
-        apiResponse.setCode(errorCode.getCode());
-        apiResponse.setMessage(errorCode.getMessage());
-
-        return ResponseEntity
-                .badRequest()
-                .body(apiResponse);
+        ApiResponse<?> response = ApiResponse.builder()
+                .code(errorCode.getCode())
+                .message(e.getCustomMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        String enumKey = e.getFieldError().getDefaultMessage();
-        ErrorCode errorCode = ErrorCode.INVALID_KEY;
+    public ResponseEntity<ApiResponse<?>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        List<ApiResponse.ErrorItem> errors = e.getBindingResult().getFieldErrors().stream()
+                .map(fieldError -> {
+                    String enumKey = fieldError.getDefaultMessage();
 
-        Map<String, Object> attributes = null;
-        try {
-            errorCode = ErrorCode.valueOf(enumKey);
+                    ErrorCode errorCode ;
 
-            var constraintViolation = e.getBindingResult()
-                    .getAllErrors().getFirst().unwrap(ConstraintViolation.class);
-            attributes = constraintViolation.getConstraintDescriptor().getAttributes();
+                    try {
+                        errorCode = ErrorCode.valueOf(enumKey);
+                    } catch (IllegalArgumentException ex) {
+                        errorCode = ErrorCode.CLASSNAME_EXISTED;
+                    }
+                    return new ApiResponse.ErrorItem(
+                            fieldError.getField(),
+                            errorCode.getCode(),
+                            errorCode.getMessage()
+                            );
+                })
+                .toList();
 
-            log.info(attributes.toString());
-        }catch (IllegalArgumentException ex){
-
-        }
-
-        ApiResponse apiResponse = new ApiResponse();
-
-        apiResponse.setCode(errorCode.getCode());
-        apiResponse.setMessage(Objects.nonNull(attributes) ?
-                mapAttribute(errorCode.getMessage(), attributes)
-                : errorCode.getMessage());
+        ApiResponse<?> apiResponse = ApiResponse.builder()
+                .code(HttpStatus.BAD_REQUEST.value())
+                .message("validation error")
+                .errorItems(errors)
+                .build();
 
         return ResponseEntity.badRequest().body(apiResponse);
-    }
-
-    private String mapAttribute(String message, Map<String, Object> attributes){
-        String minValue = String.valueOf(attributes.get(MIN_ATTRIBUTE));
-
-        return message.replace("{" + MIN_ATTRIBUTE + "}", minValue);
     }
 
     @ExceptionHandler(RuntimeException.class)

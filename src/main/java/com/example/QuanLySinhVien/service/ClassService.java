@@ -36,13 +36,13 @@ public class ClassService {
 
     public ClassResponse getClassById(Long id) {
         ClassEntity classEntity1 = classRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.ID_NOTFOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.ID_NOTFOUND, "ClassId"));
         return classMapper.toDto(classEntity1);
     }
 
     public ClassResponse updateClassById(Long id, ClassRequest classRequest) {
         ClassEntity classEntity1 = classRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.ID_NOTFOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.ID_NOTFOUND, "ClassId"));
 
         if (classRepository.existsByClassName(classRequest.getClassName())) {
             throw new AppException(ErrorCode.CLASSNAME_EXISTED);
