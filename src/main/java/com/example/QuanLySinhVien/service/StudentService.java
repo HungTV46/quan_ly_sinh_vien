@@ -1,6 +1,7 @@
 package com.example.QuanLySinhVien.service;
 
 import com.example.QuanLySinhVien.dto.request.MarkFilterRequest;
+import com.example.QuanLySinhVien.dto.request.SearchStudentRequest;
 import com.example.QuanLySinhVien.dto.request.StudentRequest;
 import com.example.QuanLySinhVien.dto.response.StudentResponse;
 import com.example.QuanLySinhVien.entity.Student;
@@ -8,9 +9,12 @@ import com.example.QuanLySinhVien.exception.AppException;
 import com.example.QuanLySinhVien.exception.ErrorCode;
 import com.example.QuanLySinhVien.mapper.StudentMapper;
 import com.example.QuanLySinhVien.repository.StudentRepository;
+import com.example.QuanLySinhVien.service.specification.StudentSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -23,7 +27,8 @@ public class StudentService {
     private final StudentMapper studentMapper;
 
     public StudentResponse createStudent(StudentRequest request) {
-        if (studentRepository.existsByUsername(request.getUsername())) {
+
+        if (checkUsername(null,request.getUsername())) {
             throw new AppException(ErrorCode.USERNAME_EXISTED);
         }
 
@@ -31,6 +36,12 @@ public class StudentService {
         StudentResponse response = studentMapper.toDto(studentRepository.save(student));
 
         return response;
+    }
+
+    private Boolean checkUsername(Long currentId,String username){
+        return studentRepository.exists(
+                StudentSpecification.checkUserName(currentId, username)
+        );
     }
 
     public List<StudentResponse> getAllStudents() {
@@ -131,6 +142,9 @@ public class StudentService {
 
     public StudentResponse updateStudent(StudentRequest request, Long id) {
         Student student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("không tìm thấy thông tin sinh viên"));
+        if (checkUsername(id, request.getUsername())) {
+            throw new AppException(ErrorCode.USERNAME_EXISTED);
+        }
         studentMapper.updateStudent(request, student);
         Student studentNew = studentRepository.save(student);
         return studentMapper.toDto(studentNew);
@@ -179,5 +193,18 @@ public class StudentService {
     public List<StudentResponse> getStudentByClassId(Long classId) {
         List<Student> students = studentRepository.findStudentByClassId(classId);
         return studentMapper.toListDto(students);
+    }
+
+    public Page<StudentResponse> searchStudents (SearchStudentRequest request) {
+        Page<Student> page = studentRepository.findAll(
+                Specification.where(StudentSpecification.hasName(request.getName()))
+                        .and(StudentSpecification.markGreaterThanOrEqual(request.getMarkMin()))
+                        .and(StudentSpecification.markLessThanOrEqual(request.getMarkMax()))
+                        .and(StudentSpecification.birthDateBetween(request.getBirthDateFrom(), request.getBirthDateTo()))
+                        .and(StudentSpecification.hasClassId(request.getClassId()))
+                        .and(StudentSpecification.hasStudent(request.getSubjectId(),  request.getStatus()))
+                ,request.getPageDto().toPageable()
+        );
+        return page.map(studentMapper::toDto);
     }
 }

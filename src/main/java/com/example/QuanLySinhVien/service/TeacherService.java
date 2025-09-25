@@ -1,5 +1,6 @@
 package com.example.QuanLySinhVien.service;
 
+import com.example.QuanLySinhVien.dto.request.SearchTeacherRequest;
 import com.example.QuanLySinhVien.dto.request.TeacherRequest;
 import com.example.QuanLySinhVien.dto.response.TeacherResponse;
 import com.example.QuanLySinhVien.entity.ClassEntity;
@@ -9,7 +10,10 @@ import com.example.QuanLySinhVien.exception.ErrorCode;
 import com.example.QuanLySinhVien.mapper.TeacherMapper;
 import com.example.QuanLySinhVien.repository.ClassRepository;
 import com.example.QuanLySinhVien.repository.TeacherRepository;
+import com.example.QuanLySinhVien.service.specification.TeacherSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -59,5 +63,17 @@ public class TeacherService {
 
     public void delete(Long id) {
         teacherRepository.deleteById(id);
+    }
+
+    public Page<TeacherResponse> search(SearchTeacherRequest request){
+        Page<Teacher> teachers = teacherRepository.findAll(
+                Specification.where(TeacherSpecification.hasContent(request.getContent()))
+                .and(TeacherSpecification.hasClassId(request.getClassId()))
+                .and(TeacherSpecification.hasEmail(request.getEmail()))
+                .and(TeacherSpecification.hasPhone(request.getPhone())),
+                request.getPageDto().toPageable()
+        );
+
+        return teachers.map(teacherMapper::toDto);
     }
 }

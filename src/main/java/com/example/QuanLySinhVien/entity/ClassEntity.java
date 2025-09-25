@@ -26,8 +26,14 @@ public class ClassEntity {
     private Long id;
 
     @Column(name = "CLASS_NAME", unique = true)
-    @NotBlank(message = "")
     private String className;
+
+    private Integer maxCapacity;
+
+    private Integer currentCapacity;
+
+    @Version
+    private Long version;
 
     @OneToMany(mappedBy = "classEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StudentClass> studentClasses = new ArrayList<>();

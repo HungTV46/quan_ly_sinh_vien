@@ -1,7 +1,9 @@
 package com.example.QuanLySinhVien.controller;
 
 import com.example.QuanLySinhVien.dto.request.MarkFilterRequest;
+import com.example.QuanLySinhVien.dto.request.SearchStudentRequest;
 import com.example.QuanLySinhVien.dto.request.StudentRequest;
+import com.example.QuanLySinhVien.dto.response.ApiResponse;
 import com.example.QuanLySinhVien.dto.response.StudentResponse;
 import com.example.QuanLySinhVien.service.StudentService;
 import jakarta.validation.Valid;
@@ -34,7 +36,7 @@ public class StudentController {
     }
 
     @PostMapping("/filter-good-student")
-    public ResponseEntity<?> filterGoodStudent(@RequestBody MarkFilterRequest markFilterRequest) {
+    public ResponseEntity<?> filterGoodStudent(@Valid @RequestBody MarkFilterRequest markFilterRequest) {
         return ResponseEntity.ok(studentService.filterMarkGoodStudent(markFilterRequest));
     }
 
@@ -86,5 +88,12 @@ public class StudentController {
     @GetMapping("/list-student/{id}")
     public ResponseEntity<?> getStudentByClassId(@PathVariable Long id) {
         return ResponseEntity.ok(studentService.getStudentByClassId(id));
+    }
+
+    @PostMapping("/search")
+    public ApiResponse<?> searchStudent(@RequestBody SearchStudentRequest request) {
+        return ApiResponse.builder()
+                .result(studentService.searchStudents(request))
+                .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.QuanLySinhVien.controller;
 
+import com.example.QuanLySinhVien.dto.request.SearchSubjectRequest;
 import com.example.QuanLySinhVien.dto.request.SubjectRequest;
 import com.example.QuanLySinhVien.dto.response.ApiResponse;
 import com.example.QuanLySinhVien.service.SubjectService;
@@ -46,6 +47,13 @@ public class SubjectController {
         subjectService.delete(id);
         return ApiResponse.builder()
                 .result("delete subject successfully")
+                .build();
+    }
+
+    @PostMapping("/search")
+    public ApiResponse<?> search(@RequestBody SearchSubjectRequest request){
+        return ApiResponse.builder()
+                .result(subjectService.search(request))
                 .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.QuanLySinhVien.controller;
 
+import com.example.QuanLySinhVien.dto.request.SearchTeacherRequest;
 import com.example.QuanLySinhVien.dto.request.TeacherRequest;
 import com.example.QuanLySinhVien.dto.response.ApiResponse;
 import com.example.QuanLySinhVien.dto.response.TeacherResponse;
@@ -47,6 +48,13 @@ public class TeacherController {
         teacherService.delete(id);
         return ApiResponse.builder()
                 .result("delete teacher successfully")
+                .build();
+    }
+
+    @PostMapping("/search")
+    public ApiResponse<?> search(@RequestBody SearchTeacherRequest request){
+        return ApiResponse.builder()
+                .result(teacherService.search(request))
                 .build();
     }
 }
