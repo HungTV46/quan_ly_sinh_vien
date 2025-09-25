@@ -1,6 +1,7 @@
 package com.example.QuanLySinhVien.exception;
 
 import com.example.QuanLySinhVien.dto.response.ApiResponse;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.validation.ConstraintViolation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,16 +21,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    private static final String MIN_ATTRIBUTE = "min";
-
-//    @ExceptionHandler(.class)
-//    public ResponseEntity<ApiResponse> handleUsernameAlreadyExistsException( e) {
-//        ApiResponse apiResponse = new ApiResponse();
-//        apiResponse.setCode(ErrorCode.USERNAME_EXISTED.getCode());
-//        apiResponse.setMessage(ErrorCode.USERNAME_EXISTED.getMessage());
-//        return ResponseEntity.badRequest().body(apiResponse);
-//    }
 
     @ExceptionHandler(value = AppException.class)
     ResponseEntity<ApiResponse<?>> handlingAppException (AppException e){
@@ -79,5 +70,14 @@ public class GlobalExceptionHandler {
         apiResponse.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
         apiResponse.setMessage(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
         return ResponseEntity.badRequest().body(apiResponse);
+    }
+
+    @ExceptionHandler(OptimisticLockException.class)
+    public ResponseEntity<ApiResponse<?>> handleOptimisticLockException(OptimisticLockException e) {
+        ApiResponse<?> apiResponse = ApiResponse.builder()
+                .code(ErrorCode.CONFLICT.getCode())
+                .message(ErrorCode.CONFLICT.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiResponse);
     }
 }

@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999,"Uncategorized error!"),
     INVALID_KEY(1001, "Uncategorized error!"),
+    CONFLICT(1002, "Data was updated or deleted by another user.Please try again!"),
 
 
     NAME_INVALID(1201, "Name is invalid!"),
@@ -20,6 +21,7 @@ public enum ErrorCode {
 
     CLASSNAME_EXISTED(1401, "Class name existed!"),
     CLASSNAME_NOTBlANK(1402, "Class name is not blank!"),
+    CLASS_FULL(1403, "Class is already full!!"),
 
     ID_NOTFOUND(1501, "%s not found!"),
     ID_EXISTED(1502, "%s already existed!"),

@@ -14,7 +14,9 @@ import com.example.QuanLySinhVien.repository.StudentClassRepository;
 import com.example.QuanLySinhVien.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,6 +27,7 @@ public class StudentClassService {
     private final StudentRepository studentRepository;
     private final StudentClassMapper studentClassMapper;
 
+    @Transactional
     public StudentClassResponse create(StudentClassRequest request) {
         ClassEntity classEntity = classRepository.findById(request.getClassId())
                 .orElseThrow(()-> new AppException(ErrorCode.ID_NOTFOUND,"classId"));
@@ -38,13 +41,19 @@ public class StudentClassService {
             throw new AppException(ErrorCode.ID_EXISTED, "ClassId and StudentId");
         }
 
-        StudentClass entity = new StudentClass();
-        entity.setId(new StudentClassId());
-        entity.setStudent(student);
-        entity.setClassEntity(classEntity);
-        entity.setStatus(request.getStatus());
+        if (classEntity.getCurrentCapacity() >= classEntity.getMaxCapacity()){
+            throw new AppException(ErrorCode.CLASS_FULL);
+        }
+        classEntity.setCurrentCapacity(classEntity.getCurrentCapacity() + 1);
+
+        StudentClass entity = new StudentClass(new StudentClassId(request.getStudentId(),
+                request.getClassId()),
+                student,classEntity,
+                request.getStatus()
+                );
 
         StudentClass saved = studentClassRepository.save(entity);
+        classRepository.save(classEntity);
         return studentClassMapper.toDto(saved);
     }
 

@@ -38,4 +38,11 @@ public class StudentClass implements Serializable {
     private LocalDateTime updatedAt;
 
     private Integer status; // 1: đang học, 0: nghỉ học
+
+    public StudentClass(StudentClassId id, Student student, ClassEntity classEntity, Integer status) {
+        this.id = id;
+        this.student = student;
+        this.classEntity = classEntity;
+        this.status = status;
+    }
 }
