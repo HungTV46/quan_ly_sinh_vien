@@ -21,7 +21,7 @@ public enum ErrorCode {
 
     CLASSNAME_EXISTED(1401, "Class name existed!"),
     CLASSNAME_NOTBlANK(1402, "Class name is not blank!"),
-    CLASS_FULL(1403, "Class is already full!!"),
+    CLASS_FULL(1403, "Class is already full. Please register another class!"),
 
     ID_NOTFOUND(1501, "%s not found!"),
     ID_EXISTED(1502, "%s already existed!"),

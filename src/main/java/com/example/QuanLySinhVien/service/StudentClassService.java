@@ -49,11 +49,12 @@ public class StudentClassService {
         StudentClass entity = new StudentClass(new StudentClassId(request.getStudentId(),
                 request.getClassId()),
                 student,classEntity,
+                LocalDateTime.now(),LocalDateTime.now(),
                 request.getStatus()
                 );
 
-        StudentClass saved = studentClassRepository.save(entity);
         classRepository.save(classEntity);
+        StudentClass saved = studentClassRepository.save(entity);
         return studentClassMapper.toDto(saved);
     }
 
