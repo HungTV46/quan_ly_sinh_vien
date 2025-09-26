@@ -23,7 +23,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
     @Query(value = "select s from Student s join s.studentClasses c where c.classEntity.id = :id")
     List<Student> findStudentByClassId(@Param("id") Long id);
 
-    @NonNull String findByUsername(String username);
+    Student findByUsername(String username);
 
     boolean existsByUsername(String username);
 }

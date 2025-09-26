@@ -10,6 +10,7 @@ public enum ErrorCode {
     INVALID_KEY(1001, "Uncategorized error!"),
     CONFLICT(1002, "Data was updated or deleted by another user.Please try again!"),
     ENTITY_NOT_FOUND(1003, "Entity not found!"),
+    UNAUTHENTICATED(1004, "Unauthenticated!"),
 
 
     NAME_INVALID(1201, "Name is invalid!"),
@@ -18,6 +19,8 @@ public enum ErrorCode {
     PASSWORD_LENGTH_INVALID(1302, "Password length is invalid!"),
     USERNAME_EXISTED(1303, "UserName existed!"),
     USERNAME_INVALID(1304, "UserName is invalid!"),
+    USERNAME_NOT_FOUND(1305, "UserName is not found!"),
+
 
 
     CLASSNAME_EXISTED(1401, "Class name existed!"),
