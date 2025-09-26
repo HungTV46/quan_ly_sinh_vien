@@ -4,10 +4,11 @@ import com.example.QuanLySinhVien.dto.request.IntrospectRequest;
 import com.example.QuanLySinhVien.dto.request.LoginRequest;
 import com.example.QuanLySinhVien.dto.response.AuthResponse;
 import com.example.QuanLySinhVien.dto.response.IntrospectResponse;
-import com.example.QuanLySinhVien.entity.Student;
+import com.example.QuanLySinhVien.entity.User;
 import com.example.QuanLySinhVien.exception.AppException;
 import com.example.QuanLySinhVien.exception.ErrorCode;
 import com.example.QuanLySinhVien.repository.StudentRepository;
+import com.example.QuanLySinhVien.repository.UserRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -16,6 +17,7 @@ import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -26,7 +28,8 @@ import java.util.Date;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final StudentRepository  studentRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @NonFinal
     @Value("${jwt.signerKey}")
@@ -50,11 +53,11 @@ public class AuthService {
     }
 
     public AuthResponse authenticate(LoginRequest request) throws JOSEException {
-        Student student = studentRepository.findByUsername(request.username());
-        if(student==null){
+        User user = userRepository.findByUsername(request.username());
+        if(user ==null){
             throw new AppException(ErrorCode.USERNAME_NOT_FOUND);
         }
-         boolean auth = student.getPassword().equals(request.password());
+        var auth = passwordEncoder.matches(request.password(), user.getPassword());
 
         if(!auth){
             throw new AppException(ErrorCode.UNAUTHENTICATED);
