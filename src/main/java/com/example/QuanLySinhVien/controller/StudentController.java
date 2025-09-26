@@ -6,6 +6,7 @@ import com.example.QuanLySinhVien.dto.request.StudentRequest;
 import com.example.QuanLySinhVien.dto.response.ApiResponse;
 import com.example.QuanLySinhVien.dto.response.StudentResponse;
 import com.example.QuanLySinhVien.service.StudentService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -21,8 +22,9 @@ public class StudentController {
     private final StudentService studentService;
 
     @PostMapping
-    public ResponseEntity<?> createStudent(@Valid @RequestBody StudentRequest studentRequest) {
-        return ResponseEntity.ok(studentService.createStudent(studentRequest));
+    public ResponseEntity<?> createStudent(@Valid @RequestBody StudentRequest studentRequest,
+                                           @RequestHeader(value = "Idempotency-key", required = false) String idempotencyKey) throws JsonProcessingException {
+        return ResponseEntity.ok(studentService.createStudent(studentRequest,idempotencyKey));
     }
 
     @GetMapping

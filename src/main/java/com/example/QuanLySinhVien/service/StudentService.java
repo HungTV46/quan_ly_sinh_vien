@@ -10,6 +10,8 @@ import com.example.QuanLySinhVien.exception.ErrorCode;
 import com.example.QuanLySinhVien.mapper.StudentMapper;
 import com.example.QuanLySinhVien.repository.StudentRepository;
 import com.example.QuanLySinhVien.service.specification.StudentSpecification;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
@@ -25,8 +27,16 @@ import java.util.stream.Collectors;
 public class StudentService {
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
+    private final IdempotencyService  idempotencyService;
+    private final ObjectMapper objectMapper;
 
-    public StudentResponse createStudent(StudentRequest request) {
+    public StudentResponse createStudent(StudentRequest request, String idempotencyKey) throws JsonProcessingException {
+
+        if (idempotencyKey != null && idempotencyService.exists(idempotencyKey)) {
+            // trả về response từ request cũ
+            String cached = idempotencyService.getResponse(idempotencyKey);
+            return objectMapper.readValue(cached,StudentResponse.class);
+        }
 
         if (checkUsername(null,request.getUsername())) {
             throw new AppException(ErrorCode.USERNAME_EXISTED);
@@ -34,6 +44,11 @@ public class StudentService {
 
         Student student = studentMapper.toEntity(request);
         StudentResponse response = studentMapper.toDto(studentRepository.save(student));
+
+        if (idempotencyKey != null){
+            String json = objectMapper.writeValueAsString(response);
+            idempotencyService.saveResponse(idempotencyKey, json);
+        }
 
         return response;
     }
