@@ -1,5 +1,6 @@
 package com.example.QuanLySinhVien.dto.request;
 
+import com.example.QuanLySinhVien.validation.ValidUsername;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class StudentRequest {
-    @NotBlank(message = "USERNAME_INVALID")
+    @ValidUsername(message = "USERNAME_INVALID")
     private String username;
 
     @NotBlank(message = "PASSWORD_INVALID")

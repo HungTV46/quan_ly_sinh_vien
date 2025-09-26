@@ -9,6 +9,7 @@ public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999,"Uncategorized error!"),
     INVALID_KEY(1001, "Uncategorized error!"),
     CONFLICT(1002, "Data was updated or deleted by another user.Please try again!"),
+    ENTITY_NOT_FOUND(1003, "Entity not found!"),
 
 
     NAME_INVALID(1201, "Name is invalid!"),

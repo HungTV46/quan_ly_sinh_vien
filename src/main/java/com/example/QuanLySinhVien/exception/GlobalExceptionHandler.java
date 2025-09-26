@@ -1,6 +1,7 @@
 package com.example.QuanLySinhVien.exception;
 
 import com.example.QuanLySinhVien.dto.response.ApiResponse;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.validation.ConstraintViolation;
 import lombok.extern.slf4j.Slf4j;
@@ -79,5 +80,14 @@ public class GlobalExceptionHandler {
                 .message(ErrorCode.CONFLICT.getMessage())
                 .build();
         return ResponseEntity.status(HttpStatus.CONFLICT).body(apiResponse);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ApiResponse<?>> handleEntityNotFoundException(EntityNotFoundException e) {
+        ApiResponse<?> apiResponse = new ApiResponse();
+        apiResponse.setCode(ErrorCode.ENTITY_NOT_FOUND.getCode());
+        apiResponse.setMessage(ErrorCode.ENTITY_NOT_FOUND.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
     }
 }

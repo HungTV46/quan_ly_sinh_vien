@@ -25,7 +25,7 @@ public class Student {
     private Long id;
 
     @NonNull
-    @Column(name = "USERNAME", unique = true)
+    @Column(name = "USERNAME", unique = true, nullable = false)
     private String username;
 
     @Column(name = "PASSWORD")
