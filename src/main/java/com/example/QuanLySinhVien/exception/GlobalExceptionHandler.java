@@ -7,12 +7,14 @@ import jakarta.validation.ConstraintViolation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
 
+import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +33,7 @@ public class GlobalExceptionHandler {
                 .code(errorCode.getCode())
                 .message(e.getCustomMessage())
                 .build();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return ResponseEntity.status(errorCode.getStatusCode()).body(response);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -50,13 +52,14 @@ public class GlobalExceptionHandler {
                     return new ApiResponse.ErrorItem(
                             fieldError.getField(),
                             errorCode.getCode(),
-                            errorCode.getMessage()
+                            errorCode.getMessage(),
+                            errorCode.getStatusCode()
                             );
                 })
                 .toList();
 
         ApiResponse<?> apiResponse = ApiResponse.builder()
-                .code(HttpStatus.BAD_REQUEST.value())
+                .code(errors.get(0).getStatusCode().value())
                 .message("validation error")
                 .errorItems(errors)
                 .build();
@@ -70,7 +73,7 @@ public class GlobalExceptionHandler {
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
         apiResponse.setMessage(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
-        return ResponseEntity.badRequest().body(apiResponse);
+        return ResponseEntity.status(ErrorCode.UNCATEGORIZED_EXCEPTION.getStatusCode()).body(apiResponse);
     }
 
     @ExceptionHandler(OptimisticLockException.class)
@@ -79,7 +82,7 @@ public class GlobalExceptionHandler {
                 .code(ErrorCode.CONFLICT.getCode())
                 .message(ErrorCode.CONFLICT.getMessage())
                 .build();
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiResponse);
+        return ResponseEntity.status(ErrorCode.CONFLICT.getStatusCode()).body(apiResponse);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
@@ -88,6 +91,18 @@ public class GlobalExceptionHandler {
         apiResponse.setCode(ErrorCode.ENTITY_NOT_FOUND.getCode());
         apiResponse.setMessage(ErrorCode.ENTITY_NOT_FOUND.getMessage());
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
+        return ResponseEntity.status(ErrorCode.ENTITY_NOT_FOUND.getStatusCode()).body(apiResponse);
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ApiResponse<?>> handleAccessDeniedException(AuthorizationDeniedException e) {
+        ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
+
+        return ResponseEntity.status(errorCode.getStatusCode()).body(
+                ApiResponse.builder()
+                        .code(errorCode.getCode())
+                        .message(errorCode.getMessage())
+                        .build()
+        );
     }
 }

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 
 import java.util.List;
 
@@ -26,5 +28,6 @@ public class ApiResponse <T>{
         private String field;
         private int code;
         private String message;
+        private HttpStatusCode statusCode;
     }
 }
