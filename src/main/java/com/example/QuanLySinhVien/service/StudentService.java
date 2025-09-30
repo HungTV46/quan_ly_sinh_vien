@@ -13,15 +13,18 @@ import com.example.QuanLySinhVien.service.specification.StudentSpecification;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StudentService {
@@ -59,7 +62,9 @@ public class StudentService {
         );
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public List<StudentResponse> getAllStudents() {
+        log.info("In method get Students");
         List<Student> students = studentRepository.findAll();
         List<StudentResponse> studentResponses = studentMapper.toListDto(students);
         return studentResponses;

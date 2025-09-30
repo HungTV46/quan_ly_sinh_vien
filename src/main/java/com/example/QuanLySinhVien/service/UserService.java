@@ -9,6 +9,9 @@ import com.example.QuanLySinhVien.exception.ErrorCode;
 import com.example.QuanLySinhVien.mapper.UserMapper;
 import com.example.QuanLySinhVien.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,5 +40,12 @@ public class UserService {
         user.setRoles(roles);
 
         return userMapper.toDto(userRepository.save(user));
+    }
+
+//    @PostAuthorize("returnObject.username == authentication.name")
+    public UserResponse getMyInfo(){
+        var authenticatedUser = SecurityContextHolder.getContext().getAuthentication();
+//        userRepository.findByUsername(authenticatedUser.getName());
+        return userMapper.toDto(userRepository.findByUsername(authenticatedUser.getName()).orElseThrow(()->new AppException(ErrorCode.USERNAME_NOT_FOUND)));
     }
 }

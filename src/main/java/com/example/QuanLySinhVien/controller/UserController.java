@@ -5,10 +5,7 @@ import com.example.QuanLySinhVien.dto.response.ApiResponse;
 import com.example.QuanLySinhVien.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,6 +17,13 @@ public class UserController {
     public ApiResponse<?> createUser(@RequestBody UserRequest request) {
         return ApiResponse.builder()
                 .result(userService.createUser(request))
+                .build();
+    }
+
+    @GetMapping("/my-info")
+    public ApiResponse<?> getMyInfo() {
+        return  ApiResponse.builder()
+                .result(userService.getMyInfo())
                 .build();
     }
 }
