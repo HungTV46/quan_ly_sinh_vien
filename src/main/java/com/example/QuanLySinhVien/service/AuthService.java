@@ -53,10 +53,9 @@ public class AuthService {
     }
 
     public AuthResponse authenticate(LoginRequest request) throws JOSEException {
-        User user = userRepository.findByUsername(request.username());
-        if(user ==null){
-            throw new AppException(ErrorCode.USERNAME_NOT_FOUND);
-        }
+        var user = userRepository.findByUsername(request.username())
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
+
         var auth = passwordEncoder.matches(request.password(), user.getPassword());
 
         if(!auth){

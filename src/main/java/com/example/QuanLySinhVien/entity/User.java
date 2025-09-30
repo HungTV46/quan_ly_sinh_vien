@@ -6,6 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
+import java.util.Set;
+
 @Entity
 @Getter
 @Setter
@@ -20,5 +22,7 @@ public class User {
     private String username;
 
     private String password;
+
+    Set<String> roles;
 
 }

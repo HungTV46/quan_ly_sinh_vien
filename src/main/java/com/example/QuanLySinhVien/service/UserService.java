@@ -3,6 +3,7 @@ package com.example.QuanLySinhVien.service;
 import com.example.QuanLySinhVien.dto.request.UserRequest;
 import com.example.QuanLySinhVien.dto.response.UserResponse;
 import com.example.QuanLySinhVien.entity.User;
+import com.example.QuanLySinhVien.enums.Roles;
 import com.example.QuanLySinhVien.exception.AppException;
 import com.example.QuanLySinhVien.exception.ErrorCode;
 import com.example.QuanLySinhVien.mapper.UserMapper;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +30,11 @@ public class UserService {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Roles.USER.name());
+
+        user.setRoles(roles);
 
         return userMapper.toDto(userRepository.save(user));
     }
