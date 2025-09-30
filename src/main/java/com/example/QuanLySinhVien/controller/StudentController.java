@@ -9,12 +9,15 @@ import com.example.QuanLySinhVien.service.StudentService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/student")
@@ -28,8 +31,15 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllStudents() {
-        return ResponseEntity.ok(studentService.getAllStudents());
+    public ApiResponse<?> getAllStudents() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        log.info("UserName : {}", authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
+
+        return ApiResponse.builder()
+                .result(studentService.getAllStudents())
+                .build();
     }
 
     @GetMapping("/search-by-id")
