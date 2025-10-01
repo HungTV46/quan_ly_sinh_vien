@@ -62,7 +62,8 @@ public class StudentService {
         );
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public List<StudentResponse> getAllStudents() {
         log.info("In method get Students");
         List<Student> students = studentRepository.findAll();

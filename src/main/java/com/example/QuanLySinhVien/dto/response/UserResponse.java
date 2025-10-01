@@ -15,5 +15,6 @@ public class UserResponse {
     private String username;
     @JsonIgnore
     private String password;
-    Set<String> roles;
+
+    private Set<RoleResponse> roles;
 }
