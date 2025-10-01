@@ -7,11 +7,11 @@ springdoc:
     enabled: true
 #    path: /swagger-ui.html
 
-logging:
-  level:
-    root: info
-  pattern:
-    console: '{"timestamp":"%d{yyyy-MM-dd HH:mm:ss}","level":"%p","thread":"%t","logger":"%c","message":"%m"}%n'
+#logging:
+#  level:
+#    root: info
+#  pattern:
+#    console: '{"timestamp":"%d{yyyy-MM-dd HH:mm:ss}","level":"%p","thread":"%t","logger":"%c","message":"%m"}%n'
 
 management:
   endpoints:
