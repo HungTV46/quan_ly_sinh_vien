@@ -1,5 +1,6 @@
 package com.example.QuanLySinhVien.dto.request;
 
+import com.example.QuanLySinhVien.validation.BirthDateConstrain;
 import com.example.QuanLySinhVien.validation.ValidUsername;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -23,6 +24,8 @@ public class StudentRequest {
 
     @NotBlank(message = "NAME_INVALID")
     private String name;
+
+    @BirthDateConstrain(min = 16, message = "BIRTH_DATE_INVALID")
     private LocalDate birthDate;
 
     @Min(value = 0, message = "MARK_INVALID")

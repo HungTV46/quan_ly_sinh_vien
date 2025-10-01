@@ -25,6 +25,8 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private final String MIN_ATTRIBUTE = "min";
+
     @ExceptionHandler(value = AppException.class)
     ResponseEntity<ApiResponse<?>> handlingAppException (AppException e){
         ErrorCode errorCode = e.getErrorCode();
@@ -38,33 +40,36 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<?>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        List<ApiResponse.ErrorItem> errors = e.getBindingResult().getFieldErrors().stream()
-                .map(fieldError -> {
-                    String enumKey = fieldError.getDefaultMessage();
 
-                    ErrorCode errorCode ;
+        String enumKey = e.getFieldError().getDefaultMessage();
 
-                    try {
-                        errorCode = ErrorCode.valueOf(enumKey);
-                    } catch (IllegalArgumentException ex) {
-                        errorCode = ErrorCode.CLASSNAME_EXISTED;
-                    }
-                    return new ApiResponse.ErrorItem(
-                            fieldError.getField(),
-                            errorCode.getCode(),
-                            errorCode.getMessage(),
-                            errorCode.getStatusCode()
-                            );
-                })
-                .toList();
+        ErrorCode errorCode ;
+        Map<String, Object> attribute = null;
+        try {
+            errorCode = ErrorCode.valueOf(enumKey);
 
-        ApiResponse<?> apiResponse = ApiResponse.builder()
-                .code(errors.get(0).getStatusCode().value())
-                .message("validation error")
-                .errorItems(errors)
-                .build();
+            var constrainViolation = e.getBindingResult().getAllErrors()
+                    .getFirst().unwrap(ConstraintViolation.class);
 
-        return ResponseEntity.badRequest().body(apiResponse);
+            attribute = constrainViolation.getConstraintDescriptor().getAttributes();
+
+            log.info(attribute.toString());
+        } catch (IllegalArgumentException ex) {
+            errorCode = ErrorCode.INVALID_KEY;
+        }
+        ApiResponse<?> apiResponse = new ApiResponse();
+        apiResponse.setCode(errorCode.getCode());
+        apiResponse.setMessage(Objects.nonNull(attribute) ?
+                mapAttribute(errorCode.getMessage(), attribute) :
+                errorCode.getMessage());
+
+        return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
+    }
+
+    private String mapAttribute(String message, Map<String, Object> attributes) {
+        String minValue = attributes.get(MIN_ATTRIBUTE).toString();
+
+        return message.replace("{" + MIN_ATTRIBUTE + "}", minValue);
     }
 
     @ExceptionHandler(RuntimeException.class)
