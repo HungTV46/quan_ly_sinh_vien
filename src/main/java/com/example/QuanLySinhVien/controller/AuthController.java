@@ -1,8 +1,9 @@
 package com.example.QuanLySinhVien.controller;
 
 import com.example.QuanLySinhVien.dto.request.IntrospectRequest;
-import com.example.QuanLySinhVien.dto.request.InvalidatedTokenRequest;
+import com.example.QuanLySinhVien.dto.request.LogoutRequest;
 import com.example.QuanLySinhVien.dto.request.LoginRequest;
+import com.example.QuanLySinhVien.dto.request.RefreshTokenRequest;
 import com.example.QuanLySinhVien.dto.response.ApiResponse;
 import com.example.QuanLySinhVien.service.AuthService;
 import com.nimbusds.jose.JOSEException;
@@ -36,8 +37,16 @@ public class AuthController {
                 .build();
     }
 
+    @PostMapping("/refresh-token")
+    public ApiResponse<?> authenticate (@RequestBody RefreshTokenRequest request) throws JOSEException, ParseException {
+        var result = authService.refreshToken(request);
+        return  ApiResponse.builder()
+                .result(result)
+                .build();
+    }
+
     @PostMapping("/logout")
-    public ApiResponse<?> logout (@RequestBody InvalidatedTokenRequest request) throws ParseException, JOSEException {
+    public ApiResponse<?> logout (@RequestBody LogoutRequest request) throws ParseException, JOSEException {
         authService.logout(request);
         return ApiResponse.builder()
                 .result("You are logout successful!")

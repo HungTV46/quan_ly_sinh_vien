@@ -1,8 +1,10 @@
 package com.example.QuanLySinhVien.service;
 
 import com.example.QuanLySinhVien.dto.request.IntrospectRequest;
-import com.example.QuanLySinhVien.dto.request.InvalidatedTokenRequest;
+import com.example.QuanLySinhVien.dto.request.LogoutRequest;
 import com.example.QuanLySinhVien.dto.request.LoginRequest;
+import com.example.QuanLySinhVien.dto.request.RefreshTokenRequest;
+import com.example.QuanLySinhVien.dto.response.ApiResponse;
 import com.example.QuanLySinhVien.dto.response.AuthResponse;
 import com.example.QuanLySinhVien.dto.response.IntrospectResponse;
 import com.example.QuanLySinhVien.entity.InvalidatedToken;
@@ -10,7 +12,6 @@ import com.example.QuanLySinhVien.entity.User;
 import com.example.QuanLySinhVien.exception.AppException;
 import com.example.QuanLySinhVien.exception.ErrorCode;
 import com.example.QuanLySinhVien.repository.InvalidatedTokenRepository;
-import com.example.QuanLySinhVien.repository.StudentRepository;
 import com.example.QuanLySinhVien.repository.UserRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
@@ -76,7 +77,7 @@ public class AuthService {
                 .build();
     }
 
-    public void logout(InvalidatedTokenRequest request) throws ParseException, JOSEException {
+    public void logout(LogoutRequest request) throws ParseException, JOSEException {
         var signToken = verifyToken(request.getToken());
 
         String jit = signToken.getJWTClaimsSet().getJWTID();
@@ -105,6 +106,31 @@ public class AuthService {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
         return signedJWT;
+    }
+
+    public AuthResponse refreshToken(RefreshTokenRequest request) throws ParseException, JOSEException {
+        var signJwt = verifyToken(request.getToken());
+
+        var jit =  signJwt.getJWTClaimsSet().getJWTID();
+        Date expiryTime = signJwt.getJWTClaimsSet().getExpirationTime();
+
+        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+                .id(jit)
+                .expiryTime(expiryTime)
+                .build();
+
+        invalidatedTokenRepository.save(invalidatedToken);
+
+        var username = signJwt.getJWTClaimsSet().getSubject();
+
+        var user = userRepository.findByUsername(username).orElseThrow(
+                () -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
+
+        var token = generateToken(user);
+
+        return AuthResponse.builder()
+                .accessToken(token)
+                .build();
     }
 
     private String generateToken(User user) throws JOSEException {
