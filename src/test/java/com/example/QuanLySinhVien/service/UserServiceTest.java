@@ -4,8 +4,10 @@ import com.example.QuanLySinhVien.dto.request.UserRequest;
 import com.example.QuanLySinhVien.dto.response.PermissionResponse;
 import com.example.QuanLySinhVien.dto.response.RoleResponse;
 import com.example.QuanLySinhVien.dto.response.UserResponse;
+import com.example.QuanLySinhVien.entity.Role;
 import com.example.QuanLySinhVien.entity.User;
 import com.example.QuanLySinhVien.exception.AppException;
+import com.example.QuanLySinhVien.repository.RoleRepository;
 import com.example.QuanLySinhVien.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,8 +15,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 import java.util.Set;
@@ -22,6 +26,7 @@ import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
+@TestPropertySource("/test.properties")
 public class UserServiceTest {
     @Autowired
     private UserService userService;
@@ -29,7 +34,11 @@ public class UserServiceTest {
     @MockBean
     private UserRepository userRepository;
 
+    @MockBean
+    private RoleRepository roleRepository;
+
     private User user;
+    private Role role;
     private UserRequest request;
     private UserResponse userResponse;
     private RoleResponse roleResponse;
@@ -39,22 +48,22 @@ public class UserServiceTest {
         request = UserRequest.builder()
                 .username("user")
                 .password("user")
-                .roles(List.of("USER"))
+                .roles(List.of())
                 .build();
 
-        roleResponse = RoleResponse.builder()
-                .name("USER")
-                .description("role user")
-                .permissions(Set.of(
-                        PermissionResponse.builder().name("APPROVE_POST").description("approve post data permission").build(),
-                        PermissionResponse.builder().name("CREATE_DATA").description("Create data permission").build()
-                ))
-                .build();
+//        roleResponse = RoleResponse.builder()
+//                .name("USER")
+//                .description("role user")
+//                .permissions(Set.of(
+//                        PermissionResponse.builder().name("APPROVE_POST").description("approve post data permission").build(),
+//                        PermissionResponse.builder().name("CREATE_DATA").description("Create data permission").build()
+//                ))
+//                .build();
 
         userResponse = UserResponse.builder()
                 .id("61460cf94358")
                 .username("user")
-                .roles(Set.of(roleResponse))
+//                .roles(Set.of(roleResponse))
                 .build();
 
         user = User.builder()
@@ -69,6 +78,7 @@ public class UserServiceTest {
         // GIVEN
         when(userRepository.existsByUsername(ArgumentMatchers.anyString())).thenReturn(false);
         when(userRepository.save(ArgumentMatchers.any())).thenReturn(user);
+//        when(roleRepository.findAllById(ArgumentMatchers.any())).thenReturn(List.of(role));
 
         // WHEN
         var userResponse1 = userService.createUser(request);
