@@ -24,6 +24,7 @@ public enum ErrorCode {
     USERNAME_INVALID(1304, "UserName is invalid!", HttpStatus.BAD_REQUEST),
     USERNAME_NOT_FOUND(1305, "UserName is not found!", HttpStatus.NOT_FOUND),
 
+
     CLASSNAME_EXISTED(1401, "Class name existed!", HttpStatus.BAD_REQUEST),
     CLASSNAME_NOTBlANK(1402, "Class name is not blank!", HttpStatus.BAD_REQUEST),
     CLASS_FULL(1403, "Class is already full. Please register another class!", HttpStatus.BAD_REQUEST),

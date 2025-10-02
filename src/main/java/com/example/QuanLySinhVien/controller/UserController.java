@@ -5,9 +5,11 @@ import com.example.QuanLySinhVien.dto.response.ApiResponse;
 import com.example.QuanLySinhVien.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
@@ -15,7 +17,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ApiResponse<?> createUser(@RequestBody UserRequest request) {
+    public ApiResponse<?> createUser(@RequestBody @Valid UserRequest request) {
+        log.info("createUser controller");
         return ApiResponse.builder()
                 .result(userService.createUser(request))
                 .build();

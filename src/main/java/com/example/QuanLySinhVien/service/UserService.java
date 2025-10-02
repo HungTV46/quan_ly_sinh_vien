@@ -10,6 +10,7 @@ import com.example.QuanLySinhVien.mapper.UserMapper;
 import com.example.QuanLySinhVien.repository.RoleRepository;
 import com.example.QuanLySinhVien.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -28,6 +30,7 @@ public class UserService {
     private final RoleRepository roleRepository;
 
     public UserResponse createUser(UserRequest request) {
+        log.info("createUser service");
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new AppException(ErrorCode.USERNAME_EXISTED);
         }

@@ -45,7 +45,7 @@ class StudentControllerTest {
 
         StudentResponse response = new StudentResponse(1l, "user1", "password1", "truong van", LocalDate.of(2000,2,25), 3.5);
 
-        when(studentService.createStudent(any(StudentRequest.class))).thenReturn(response);
+        when(studentService.createStudent(any(StudentRequest.class),"123")).thenReturn(response);
         mockMvc.perform(post("/api/v1/student")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
@@ -80,7 +80,7 @@ class StudentControllerTest {
         request.setPassword("password1");
         request.setBirthDate(LocalDate.of(2000,2,25));
         request.setMark(3.5);
-        when(studentService.createStudent(any(StudentRequest.class))).thenThrow(new AppException(ErrorCode.USERNAME_EXISTED));
+        when(studentService.createStudent(any(StudentRequest.class),"123")).thenThrow(new AppException(ErrorCode.USERNAME_EXISTED));
 
         mockMvc.perform(post("/api/v1/student")
                     .contentType(MediaType.APPLICATION_JSON)
