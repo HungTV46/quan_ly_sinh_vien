@@ -46,3 +46,5 @@ management:
 
 jwt:
   signerKey: "bX5zmoxlsod8UqEEuTM1+AcwBuqDgT6xlZN5mpzoTnlzmb2MUbuW68X+OR4B8v2Q"
+  valid-duration: 3600 #in second
+  refreshable-duration: 36000

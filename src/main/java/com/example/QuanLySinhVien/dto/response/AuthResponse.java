@@ -9,5 +9,5 @@ import lombok.Setter;
 @Setter
 public class AuthResponse{
     private String accessToken;
-    private String refreshToke;
+    private Boolean checkInvalid;
 }
