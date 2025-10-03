@@ -18,9 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -42,6 +44,7 @@ public class UserServiceTest {
     private UserRequest request;
     private UserResponse userResponse;
     private RoleResponse roleResponse;
+    private String id = "61460cf94358";
 
     @BeforeEach
     void initData() {
@@ -99,5 +102,48 @@ public class UserServiceTest {
         // THEN
         Assertions.assertThat(exception.getErrorCode().getCode()).isEqualTo(1303);
         Assertions.assertThat(exception.getErrorCode().getMessage()).isEqualTo("UserName existed!");
+    }
+
+    @Test
+    @WithMockUser(username = "user") // sử dụng để lấy username trong securityContextHolder
+    void getMyInfo_valid_success(){
+        when(userRepository.findByUsername(ArgumentMatchers.anyString())).thenReturn(Optional.of(user));
+
+        var response = userService.getMyInfo();
+
+        Assertions.assertThat(response.getUsername()).isEqualTo("user");
+        Assertions.assertThat(response.getId()).isEqualTo("61460cf94358");
+    }
+
+    @Test
+    @WithMockUser(username = "use") // sử dụng để lấy username trong securityContextHolder
+    void getMyInfo_usernameNotFound_fail(){
+        when(userRepository.findByUsername(ArgumentMatchers.anyString())).thenReturn(Optional.ofNullable(null));
+
+        var exception = assertThrows(AppException.class, () -> userService.getMyInfo());
+
+        Assertions.assertThat(exception.getErrorCode().getCode()).isEqualTo(1305);
+        Assertions.assertThat(exception.getErrorCode().getMessage()).isEqualTo("UserName is not found!");
+    }
+
+    @Test
+    void update_validRequest_success(){
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.save(ArgumentMatchers.any())).thenReturn(user);
+
+        var response = userService.update(id, request);
+
+        Assertions.assertThat(response.getId()).isEqualTo("61460cf94358");
+        Assertions.assertThat(response.getUsername()).isEqualTo("user");
+    }
+
+    @Test
+    void update_idNotFound_fail(){
+        when(userRepository.findById(id)).thenReturn(Optional.ofNullable(null));
+
+        var exception = assertThrows(AppException.class, () -> userService.update(id, request));
+
+        Assertions.assertThat(exception.getErrorCode().getCode()).isEqualTo(1501);
+        Assertions.assertThat(exception.getErrorCode().getMessage()).isEqualTo("%s not found!");
     }
 }

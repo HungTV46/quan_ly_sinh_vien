@@ -46,11 +46,11 @@ public class UserService {
         return userMapper.toDto(userRepository.save(user));
     }
 
-//    @PostAuthorize("returnObject.username == authentication.name")
     public UserResponse getMyInfo(){
         var authenticatedUser = SecurityContextHolder.getContext().getAuthentication();
-//        userRepository.findByUsername(authenticatedUser.getName());
-        return userMapper.toDto(userRepository.findByUsername(authenticatedUser.getName()).orElseThrow(()->new AppException(ErrorCode.USERNAME_NOT_FOUND)));
+        return userMapper.toDto(userRepository.findByUsername(
+                authenticatedUser.getName()).orElseThrow(
+                        ()->new AppException(ErrorCode.USERNAME_NOT_FOUND)));
     }
 
     public UserResponse update(String id, UserRequest request) {
